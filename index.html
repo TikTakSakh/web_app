@@ -749,6 +749,7 @@
 
     /* ── Confirm Order ──────────────────────────────────────── */
     modalConfirm.addEventListener("click", () => {
+      alert("DEBUG: confirm clicked, time=" + selectedTime + ", date=" + pickupDate.value);
       if (!selectedTime || !pickupDate.value) return;
 
       const items = CATALOG
