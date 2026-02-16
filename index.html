@@ -710,16 +710,31 @@
     }
 
     pickupDate.addEventListener('change', () => {
+      validateAndFixDate();
+      renderTimeSlots(pickupDate.value);
+    });
+
+    pickupDate.addEventListener('input', () => {
+      validateAndFixDate();
+      renderTimeSlots(pickupDate.value);
+    });
+
+    function validateAndFixDate() {
       const val = pickupDate.value;
+      if (!val) return;
       const d = new Date(val + 'T00:00:00');
-      // Block Sundays
+      // Block Sundays — skip to Monday
       if (d.getDay() === 0) {
         const next = new Date(d);
         next.setDate(next.getDate() + 1);
         pickupDate.value = formatDateISO(next);
       }
-      renderTimeSlots(pickupDate.value);
-    });
+      // Enforce min date
+      const min = getMinDate();
+      if (new Date(pickupDate.value + 'T00:00:00') < min) {
+        pickupDate.value = formatDateISO(min);
+      }
+    }
 
     modalCancel.addEventListener('click', closeModal);
     modalOverlay.addEventListener('click', (e) => {
