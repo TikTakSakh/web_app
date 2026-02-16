@@ -770,7 +770,13 @@
       });
 
       if (tg) {
-        tg.sendData(payload);
+        try {
+          tg.sendData(payload);
+        } catch (err) {
+          // sendData may fail if opened via inline button — fallback to close
+          alert("Заказ отправлен! Закрываю приложение.");
+          tg.close();
+        }
       } else {
         console.log("Order payload:", payload);
         alert("Заказ отправлен!\n\n" + payload);
