@@ -4,12 +4,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Ванилька — Мини-магазин</title>
+  <title>17/17 Терминал</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700&family=Varela+Round&display=swap"
-    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet" />
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     /* ─── Reset & Base ──────────────────────────────────────── */
@@ -22,24 +20,14 @@
     }
 
     :root {
-      --bg: #FFF5F0;
-      --bg-card: #FFFFFF;
-      --primary: #D4856A;
-      --primary-soft: #E8A992;
-      --accent: #C2A0D0;
-      --accent-soft: #DCCCE5;
-      --mint: #A8D5BA;
-      --mint-soft: #C5E8D3;
-      --cream: #FFF0DB;
-      --text: #5A3E36;
-      --text-light: #8D7068;
-      --text-muted: #B09A93;
-      --border: #F0DDD6;
-      --shadow: rgba(180, 130, 110, .12);
-      --btn-order: linear-gradient(135deg, #D4856A 0%, #C2A0D0 100%);
-      --btn-order-hover: linear-gradient(135deg, #C57A60 0%, #B290C0 100%);
-      --radius: 16px;
-      --radius-sm: 10px;
+      --bg: #09090b;
+      --surface: #121214;
+      --primary: #f83245;
+      --primary-dim: rgba(248, 50, 69, 0.2);
+      --text: #ffffff;
+      --text-muted: #88888d;
+      --border: #333336;
+      --font-mono: 'Share Tech Mono', monospace;
     }
 
     html {
@@ -47,745 +35,653 @@
     }
 
     body {
-      font-family: 'Nunito Sans', sans-serif;
+      font-family: var(--font-mono);
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      padding-bottom: 100px;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 20px;
       -webkit-font-smoothing: antialiased;
+      background-image: linear-gradient(to bottom,
+          rgba(255, 255, 255, 0),
+          rgba(255, 255, 255, 0) 50%,
+          rgba(0, 0, 0, 0.1) 50%,
+          rgba(0, 0, 0, 0.1));
+      background-size: 100% 4px;
+    }
+
+    /* ─── Screens ───────────────────────────────────────────── */
+    .screen {
+      display: none;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    /* ─── Room Selection Screen ─────────────────────────────── */
+    .room-screen {
+      justify-content: center;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .room-screen .header-logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 80px;
+      height: 80px;
+      border: 2px solid var(--primary);
+      color: var(--primary);
+      font-size: 20px;
+      font-weight: bold;
+      position: relative;
+    }
+
+    .room-screen .header-logo::before {
+      content: '';
+      position: absolute;
+      top: -6px;
+      left: -6px;
+      right: -6px;
+      bottom: -6px;
+      border: 1px solid var(--primary-dim);
+    }
+
+    .room-title {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      text-align: center;
+    }
+
+    .room-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      width: 100%;
+      max-width: 340px;
+    }
+
+    .room-btn {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 20px 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
+      overflow: hidden;
+    }
+
+    .room-btn .room-num {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .room-btn:active {
+      transform: scale(0.97);
+      border-color: var(--primary);
+      box-shadow: inset 0 0 20px var(--primary-dim), 0 0 15px var(--primary-dim);
+    }
+
+    .room-btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, var(--primary-dim), transparent);
+      z-index: 1;
+      transition: left 0.4s ease;
+    }
+
+    .room-btn:active::after {
+      left: 100%;
     }
 
     /* ─── Header ────────────────────────────────────────────── */
     .header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(255, 245, 240, .85);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      padding: 16px 20px 12px;
       text-align: center;
-      border-bottom: 1px solid var(--border);
+      margin-bottom: 40px;
+      position: relative;
+    }
+
+    .header-logo-main {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 60px;
+      height: 60px;
+      border: 2px solid var(--primary);
+      color: var(--primary);
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 16px;
+      position: relative;
+    }
+
+    .header-logo-main::before {
+      content: '';
+      position: absolute;
+      top: -6px;
+      left: -6px;
+      right: -6px;
+      bottom: -6px;
+      border: 1px solid var(--primary-dim);
     }
 
     .header h1 {
-      font-family: 'Varela Round', sans-serif;
-      font-size: 1.35rem;
-      color: var(--primary);
-      letter-spacing: 0.02em;
+      font-size: 1.2rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text);
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
     }
 
     .header p {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-top: 2px;
-    }
-
-    /* ─── Catalog ───────────────────────────────────────────── */
-    .catalog {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      padding: 16px 16px 0;
-    }
-
-    /* ─── Card ──────────────────────────────────────────────── */
-    .card {
-      background: var(--bg-card);
-      border-radius: var(--radius);
-      padding: 16px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      box-shadow: 0 2px 12px var(--shadow);
-      border: 1px solid var(--border);
-      transition: transform .2s ease, box-shadow .2s ease;
-    }
-
-    .card:active {
-      transform: scale(.98);
-    }
-
-    /* Color accent stripes per card */
-    .card .stripe {
-      flex-shrink: 0;
-      width: 6px;
-      height: 54px;
-      border-radius: 3px;
-    }
-
-    .stripe-pink {
-      background: var(--primary-soft);
-    }
-
-    .stripe-brown {
-      background: #A0755A;
-    }
-
-    .stripe-rose {
-      background: #E0A0A8;
-    }
-
-    .stripe-yellow {
-      background: #E8D08A;
-    }
-
-    .stripe-orange {
-      background: #E8B88A;
-    }
-
-    .stripe-cocoa {
-      background: #9A7060;
-    }
-
-    .card-info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .card-name {
-      font-family: 'Varela Round', sans-serif;
-      font-size: 0.95rem;
-      font-weight: 400;
-      color: var(--text);
-      line-height: 1.3;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .card-price {
-      font-size: 0.8rem;
-      color: var(--text-light);
-      margin-top: 2px;
-    }
-
-    /* ─── Quantity Controls ──────────────────────────────────── */
-    .qty-controls {
-      display: flex;
-      align-items: center;
-      gap: 0;
-      flex-shrink: 0;
-    }
-
-    .qty-btn {
-      width: 36px;
-      height: 36px;
-      border: none;
-      border-radius: var(--radius-sm);
-      font-size: 1.15rem;
-      font-weight: 700;
+      font-size: 0.85rem;
       color: var(--primary);
-      background: var(--cream);
+      margin-top: 8px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ─── Room indicator (blinking, clickable) ────────────── */
+    .room-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+      padding: 8px 16px;
+      background: transparent;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .15s ease, transform .1s ease;
+      animation: glow-pulse 2s ease-in-out infinite;
+      transition: all 0.2s ease;
       -webkit-tap-highlight-color: transparent;
-      user-select: none;
     }
 
-    .qty-btn:active {
-      transform: scale(.9);
-      background: var(--border);
+    .room-indicator:active {
+      background: var(--primary-dim);
+      transform: scale(0.97);
     }
 
-    .qty-btn.minus {
-      border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+    .room-indicator .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--primary);
+      animation: blink 1s step-end infinite;
     }
 
-    .qty-btn.plus {
-      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    @keyframes glow-pulse {
+
+      0%,
+      100% {
+        box-shadow: 0 0 5px var(--primary-dim);
+      }
+
+      50% {
+        box-shadow: 0 0 15px var(--primary-dim), 0 0 30px rgba(248, 50, 69, 0.1);
+      }
     }
 
-    .qty-value {
-      width: 36px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--text);
-      background: #FFF9F5;
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      user-select: none;
-    }
-
-    /* ─── Footer / Order Button ─────────────────────────────── */
-    .footer {
-      position: fixed;
-      bottom: 0;
+    /* ─── Scanline ──────────────────────────────────────────── */
+    .scan-line {
+      position: absolute;
+      top: 0;
       left: 0;
       right: 0;
-      z-index: 100;
-      padding: 12px 16px;
-      padding-bottom: max(12px, env(safe-area-inset-bottom));
-      background: rgba(255, 245, 240, .92);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-top: 1px solid var(--border);
-    }
-
-    .order-summary {
-      text-align: center;
-      font-size: 0.8rem;
-      color: var(--text-light);
-      margin-bottom: 8px;
-      min-height: 18px;
-      transition: opacity .2s ease;
-    }
-
-    .order-btn {
-      display: block;
-      width: 100%;
-      padding: 15px;
-      border: none;
-      border-radius: var(--radius);
-      background: var(--btn-order);
-      color: #FFF;
-      font-family: 'Varela Round', sans-serif;
-      font-size: 1rem;
-      font-weight: 400;
-      letter-spacing: 0.03em;
-      cursor: pointer;
-      transition: opacity .2s ease, transform .15s ease;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .order-btn:active {
-      transform: scale(.97);
-    }
-
-    .order-btn:disabled {
-      opacity: .4;
-      cursor: default;
-      transform: none;
-    }
-
-    .order-btn:not(:disabled):hover {
-      background: var(--btn-order-hover);
-    }
-
-    /* ─── Empty State ───────────────────────────────────────── */
-    .empty-hint {
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      padding: 48px 24px;
-      line-height: 1.5;
-    }
-
-    /* ─── Animations ────────────────────────────────────────── */
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(12px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .card {
-      animation: fadeInUp .35s ease both;
-    }
-
-    .card:nth-child(1) {
-      animation-delay: .03s;
-    }
-
-    .card:nth-child(2) {
-      animation-delay: .07s;
-    }
-
-    .card:nth-child(3) {
-      animation-delay: .11s;
-    }
-
-    .card:nth-child(4) {
-      animation-delay: .15s;
-    }
-
-    .card:nth-child(5) {
-      animation-delay: .19s;
-    }
-
-    .card:nth-child(6) {
-      animation-delay: .23s;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .card {
-        animation: none;
-      }
-
-      .qty-btn:active,
-      .order-btn:active,
-      .card:active {
-        transform: none;
-      }
-    }
-
-    /* ─── Modal Overlay ─────────────────────────────────────── */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 200;
-      background: rgba(90, 62, 54, .45);
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-      align-items: flex-end;
-      justify-content: center;
-    }
-
-    .modal-overlay.active {
-      display: flex;
-      animation: fadeIn .2s ease;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-
-      to {
-        opacity: 1;
-      }
-    }
-
-    .modal {
-      background: var(--bg-card);
-      border-radius: var(--radius) var(--radius) 0 0;
-      width: 100%;
-      max-width: 420px;
-      padding: 24px 20px;
-      padding-bottom: max(24px, env(safe-area-inset-bottom));
-      box-shadow: 0 -4px 30px rgba(180, 130, 110, .2);
-      animation: slideUp .25s ease;
-    }
-
-    @keyframes slideUp {
-      from {
-        transform: translateY(100%);
-      }
-
-      to {
-        transform: translateY(0);
-      }
-    }
-
-    .modal-title {
-      font-family: 'Varela Round', sans-serif;
-      font-size: 1.1rem;
-      color: var(--text);
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .modal-field {
-      margin-bottom: 16px;
-    }
-
-    .modal-label {
-      display: block;
-      font-size: 0.8rem;
-      color: var(--text-light);
-      margin-bottom: 6px;
-      font-weight: 600;
-    }
-
-    .modal-input {
-      width: 100%;
-      padding: 12px 14px;
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius-sm);
-      font-family: 'Nunito Sans', sans-serif;
-      font-size: 0.95rem;
-      color: var(--text);
-      background: #FFF9F5;
-      outline: none;
-      transition: border-color .2s ease;
-      -webkit-appearance: none;
-      appearance: none;
-    }
-
-    .modal-input:focus {
-      border-color: var(--primary-soft);
-    }
-
-    .modal-actions {
-      display: flex;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    .modal-btn {
-      flex: 1;
-      padding: 14px;
-      border: none;
-      border-radius: var(--radius-sm);
-      font-family: 'Varela Round', sans-serif;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: opacity .2s ease, transform .1s ease;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .modal-btn:active {
-      transform: scale(.97);
-    }
-
-    .modal-btn.cancel {
-      background: var(--cream);
-      color: var(--text-light);
-    }
-
-    .modal-btn.confirm {
-      background: var(--btn-order);
-      color: #FFF;
-    }
-
-    .modal-btn.confirm:disabled {
-      opacity: .4;
-      cursor: default;
-      transform: none;
-    }
-
-    /* Time grid */
-    .time-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-    }
-
-    .time-slot {
-      padding: 10px 4px;
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius-sm);
-      background: #FFF9F5;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--text);
-      text-align: center;
-      cursor: pointer;
-      transition: all .15s ease;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .time-slot:active {
-      transform: scale(.95);
-    }
-
-    .time-slot.selected {
+      height: 2px;
       background: var(--primary);
-      border-color: var(--primary);
-      color: #FFF;
+      opacity: 0.5;
+      box-shadow: 0 0 10px var(--primary);
+      animation: scan 4s linear infinite;
+      z-index: 10;
     }
 
-    .time-slot.disabled {
-      opacity: .3;
-      cursor: default;
+    @keyframes scan {
+      0% {
+        top: -20px;
+        opacity: 0;
+      }
+
+      10% {
+        opacity: 1;
+      }
+
+      90% {
+        opacity: 1;
+      }
+
+      100% {
+        top: 120%;
+        opacity: 0;
+      }
+    }
+
+    /* ─── Action Terminal ───────────────────────────────────── */
+    .terminal-box {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      padding: 24px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+
+    .terminal-box::before,
+    .terminal-box::after {
+      content: '';
+      position: absolute;
+      width: 15px;
+      height: 15px;
       pointer-events: none;
     }
 
-    .modal-hint {
-      font-size: 0.75rem;
+    .terminal-box::before {
+      top: -1px;
+      left: -1px;
+      border-top: 2px solid var(--primary);
+      border-left: 2px solid var(--primary);
+    }
+
+    .terminal-box::after {
+      bottom: -1px;
+      right: -1px;
+      border-bottom: 2px solid var(--primary);
+      border-right: 2px solid var(--primary);
+    }
+
+    .terminal-title {
+      font-size: 0.8rem;
       color: var(--text-muted);
-      text-align: center;
-      margin-top: 8px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .terminal-title span.blink {
+      animation: blink 1s step-end infinite;
+      color: var(--primary);
+    }
+
+    @keyframes blink {
+      50% {
+        opacity: 0;
+      }
+    }
+
+    /* ─── Buttons ───────────────────────────────────────────── */
+    .action-btn {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 18px 20px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
+      overflow: hidden;
+    }
+
+    .action-btn span {
+      position: relative;
+      z-index: 2;
+    }
+
+    .action-btn::before {
+      content: '>';
+      color: var(--primary);
+      margin-right: -10px;
+      opacity: 0;
+      transition: all 0.2s ease;
+      font-weight: bold;
+    }
+
+    .action-btn:active {
+      transform: scale(0.98);
+      border-color: var(--primary);
+      box-shadow: inset 0 0 15px var(--primary-dim);
+    }
+
+    .action-btn:active::before {
+      margin-right: 12px;
+      opacity: 1;
+    }
+
+    .action-btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, var(--primary-dim), transparent);
+      z-index: 1;
+      transition: left 0.4s ease;
+    }
+
+    .action-btn:active::after {
+      left: 100%;
+      transition: left 0.4s ease;
+    }
+
+    .action-btn .hex-code {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    /* ─── Button sent state ────────────────────────────────── */
+    .action-btn.sent {
+      border-color: var(--primary);
+      pointer-events: none;
+    }
+
+    .action-btn.sent span:first-child::after {
+      content: ' ✓';
+      color: var(--primary);
+    }
+
+    /* ─── Toast notification ───────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--surface);
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      padding: 12px 24px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      opacity: 0;
+      transition: all 0.3s ease;
+      pointer-events: none;
+      z-index: 100;
+      box-shadow: 0 0 20px var(--primary-dim);
+    }
+
+    .toast.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ─── Close button ─────────────────────────────────────── */
+    .close-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 16px 20px;
+      margin-top: 16px;
+      background: transparent;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .close-btn:active {
+      background: var(--primary-dim);
+      transform: scale(0.98);
     }
   </style>
 </head>
 
 <body>
 
-  <header class="header">
-    <h1>Ванилька</h1>
-    <p>Выберите торты для заказа</p>
-  </header>
+  <div class="scan-line"></div>
 
-  <main class="catalog" id="catalog">
-    <!-- Cards rendered by JS -->
-  </main>
-
-  <footer class="footer">
-    <div class="order-summary" id="orderSummary"></div>
-    <button class="order-btn" id="orderBtn" disabled>Сделать заказ</button>
-  </footer>
-
-  <!-- ── Date/Time Picker Modal ──────────────────────────── -->
-  <div class="modal-overlay" id="modalOverlay">
-    <div class="modal">
-      <div class="modal-title">К какому времени готовим заказ?</div>
-
-      <div class="modal-field">
-        <label class="modal-label" for="pickupDate">📅 Дата</label>
-        <input type="date" class="modal-input" id="pickupDate" />
-      </div>
-
-      <div class="modal-field">
-        <label class="modal-label">🕐 Время</label>
-        <div class="time-grid" id="timeGrid"></div>
-        <div class="modal-hint">Пн–Пт: 12:00–20:00 · Сб: 12:00–19:00 · Вс: выходной</div>
-      </div>
-
-      <div class="modal-actions">
-        <button class="modal-btn cancel" id="modalCancel">Назад</button>
-        <button class="modal-btn confirm" id="modalConfirm" disabled>Оформить</button>
-      </div>
+  <!-- ════════ SCREEN 1: Room Selection ════════ -->
+  <div class="screen room-screen active" id="roomScreen">
+    <div class="header-logo">17/17</div>
+    <div class="room-title">Выберите комнату</div>
+    <div class="room-list">
+      <button class="room-btn" data-room="Випка">
+        <span>Випка</span>
+        <span class="room-num">01</span>
+      </button>
+      <button class="room-btn" data-room="Плешка 1">
+        <span>Плешка 1</span>
+        <span class="room-num">02</span>
+      </button>
+      <button class="room-btn" data-room="Плешка 2">
+        <span>Плешка 2</span>
+        <span class="room-num">03</span>
+      </button>
     </div>
   </div>
 
+  <!-- ════════ SCREEN 2: Terminal ════════ -->
+  <div class="screen" id="terminalScreen">
+    <header class="header">
+      <div class="header-logo-main">17/17</div>
+      <h1>System Terminal</h1>
+      <p>Auth: Guest // Node: 17/17</p>
+      <button class="room-indicator" id="roomIndicator">
+        <span class="dot"></span>
+        <span>Вы сейчас тут: <span id="roomLabel">—</span></span>
+      </button>
+    </header>
+
+    <main class="terminal-box">
+      <div class="terminal-title">
+        <span>Command Link</span>
+        <span class="blink">_</span>
+      </div>
+
+      <button class="action-btn" data-command=">> позвать кого-то">
+        <span>Позвать кого-то</span>
+        <span class="hex-code">01</span>
+      </button>
+
+      <button class="action-btn" data-command=">> позвать кальянщика">
+        <span>Позвать кальянщика</span>
+        <span class="hex-code">02</span>
+      </button>
+
+      <button class="action-btn" data-command=">> поменять угли">
+        <span>Поменять угли</span>
+        <span class="hex-code">03</span>
+      </button>
+
+      <button class="action-btn" data-command=">> счет пожалуйста">
+        <span>Счет пожалуйста</span>
+        <span class="hex-code">04</span>
+      </button>
+
+    </main>
+
+    <button class="close-btn" id="closeBtn">[ Вернуться в чат ]</button>
+  </div>
+
+  <!-- Toast notification -->
+  <div class="toast" id="toast"></div>
+
   <script>
-    /* ── Catalog Data (from Google Drive knowledge base) ──── */
-    const CATALOG = [
-      { id: 1, name: "Клубничная мечта", price: 650, stripe: "stripe-pink" },
-      { id: 2, name: "Шоколадный капучино", price: 700, stripe: "stripe-brown" },
-      { id: 3, name: "Малиновый рассвет", price: 680, stripe: "stripe-rose" },
-      { id: 4, name: "Лимонный бриз", price: 670, stripe: "stripe-yellow" },
-      { id: 5, name: "Тропикана", price: 720, stripe: "stripe-orange" },
-      { id: 6, name: "Сникерс", price: 820, stripe: "stripe-cocoa" },
-    ];
-
-    /* ── State ──────────────────────────────────────────────── */
-    const quantities = {};
-    CATALOG.forEach(item => quantities[item.id] = 0);
-
-    /* ── DOM References ──────────────────────────────────────── */
-    const catalogEl = document.getElementById("catalog");
-    const summaryEl = document.getElementById("orderSummary");
-    const orderBtn = document.getElementById("orderBtn");
-
-    /* ── Telegram WebApp ────────────────────────────────────── */
     const tg = window.Telegram?.WebApp;
+
     if (tg) {
       tg.ready();
       tg.expand();
-      // Match Telegram theme if available
-      if (tg.themeParams?.bg_color) {
-        document.documentElement.style.setProperty("--bg", tg.themeParams.bg_color);
-      }
+      tg.setHeaderColor('#09090b');
+      tg.setBackgroundColor('#09090b');
     }
 
-    /* ── Render Catalog ──────────────────────────────────────── */
-    function renderCatalog() {
-      catalogEl.innerHTML = CATALOG.map(item => `
-        <div class="card" data-id="${item.id}">
-          <div class="stripe ${item.stripe}"></div>
-          <div class="card-info">
-            <div class="card-name">${item.name}</div>
-            <div class="card-price">${item.price} ₽</div>
-          </div>
-          <div class="qty-controls">
-            <button class="qty-btn minus" data-id="${item.id}" aria-label="Уменьшить">−</button>
-            <div class="qty-value" id="qty-${item.id}">0</div>
-            <button class="qty-btn plus" data-id="${item.id}" aria-label="Увеличить">+</button>
-          </div>
-        </div>
-      `).join("");
+    // ── State ─────────────────────────────────────────────────
+    let selectedRoom = '';
+
+    // ── Screen switching ──────────────────────────────────────
+    function showScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(screenId).classList.add('active');
     }
 
-    /* ── Update UI ───────────────────────────────────────────── */
-    function updateUI() {
-      let totalItems = 0;
-      let totalPrice = 0;
-
-      CATALOG.forEach(item => {
-        const qty = quantities[item.id];
-        const qtyEl = document.getElementById(`qty-${item.id}`);
-        if (qtyEl) qtyEl.textContent = qty;
-        totalItems += qty;
-        totalPrice += qty * item.price;
+    // ── Room selection ────────────────────────────────────────
+    document.querySelectorAll('.room-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        selectedRoom = btn.dataset.room;
+        document.getElementById('roomLabel').textContent = selectedRoom;
+        if (tg && tg.HapticFeedback) {
+          tg.HapticFeedback.impactOccurred('medium');
+        }
+        showScreen('terminalScreen');
       });
-
-      if (totalItems > 0) {
-        summaryEl.textContent = `${totalItems} шт. на сумму ${totalPrice} ₽`;
-        orderBtn.disabled = false;
-      } else {
-        summaryEl.textContent = "";
-        orderBtn.disabled = true;
-      }
-    }
-
-    /* ── Event Handlers ──────────────────────────────────────── */
-    catalogEl.addEventListener("click", (e) => {
-      const btn = e.target.closest(".qty-btn");
-      if (!btn) return;
-
-      const id = Number(btn.dataset.id);
-      if (btn.classList.contains("plus")) {
-        quantities[id] = Math.min(quantities[id] + 1, 99);
-      } else if (btn.classList.contains("minus")) {
-        quantities[id] = Math.max(quantities[id] - 1, 0);
-      }
-      updateUI();
     });
 
-    /* ── Modal Logic ───────────────────────────────────────── */
-    const modalOverlay = document.getElementById("modalOverlay");
-    const pickupDate = document.getElementById("pickupDate");
-    const timeGrid = document.getElementById("timeGrid");
-    const modalConfirm = document.getElementById("modalConfirm");
-    const modalCancel = document.getElementById("modalCancel");
-    let selectedTime = null;
+    // ── Room indicator click → back to room selection ────────
+    document.getElementById('roomIndicator').addEventListener('click', () => {
+      if (tg && tg.HapticFeedback) {
+        tg.HapticFeedback.impactOccurred('light');
+      }
+      showScreen('roomScreen');
+    });
 
-    // Store schedule: { dayOfWeek: [openHour, closeHour] }, 0=Sun
-    const SCHEDULE = {
-      1: [12, 20], // Mon
-      2: [12, 20], // Tue
-      3: [12, 20], // Wed
-      4: [12, 20], // Thu
-      5: [12, 20], // Fri
-      6: [12, 19], // Sat
-      // 0 (Sun) — closed
-    };
-
-    function getMinDate() {
-      const d = new Date();
-      d.setDate(d.getDate() + 2);
-      // Skip to Monday if lands on Sunday
-      if (d.getDay() === 0) d.setDate(d.getDate() + 1);
-      return d;
+    // ── Toast helper ──────────────────────────────────────────
+    function showToast(text, duration = 2000) {
+      const toast = document.getElementById('toast');
+      toast.textContent = text;
+      toast.classList.add('visible');
+      setTimeout(() => toast.classList.remove('visible'), duration);
     }
 
-    function formatDateISO(d) {
-      const y = d.getFullYear();
-      const m = String(d.getMonth() + 1).padStart(2, '0');
-      const day = String(d.getDate()).padStart(2, '0');
-      return `${y}-${m}-${day}`;
-    }
+    // ── Config ────────────────────────────────────────────────
+    const BOT_TOKEN = '8795777551:AAE2V2N1VcNGRxLgouxRhcMoKx1gGQIqVGY';
+    const ADMIN_IDS = [771134745];
+    const API_BASE = `https://api.telegram.org/bot${BOT_TOKEN}`;
 
-    function renderTimeSlots(dateStr) {
-      selectedTime = null;
-      modalConfirm.disabled = true;
-      timeGrid.innerHTML = '';
-
-      if (!dateStr) return;
-
-      const d = new Date(dateStr + 'T00:00:00');
-      const dow = d.getDay();
-      const hours = SCHEDULE[dow];
-
-      if (!hours) {
-        timeGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);font-size:0.85rem;padding:12px">Воскресенье — выходной</div>';
+    // ── Send command via Bot API ──────────────────────────────
+    async function sendCommand(commandText, btn) {
+      if (!tg) {
+        console.log("Command:", commandText, "| Room:", selectedRoom);
+        showToast('> ' + commandText);
+        btn.classList.add('sent');
+        setTimeout(() => btn.classList.remove('sent'), 2000);
         return;
       }
 
-      const [open, close] = hours;
-      for (let h = open; h < close; h++) {
-        for (let m = 0; m < 60; m += 30) {
-          const label = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
-          const slot = document.createElement('div');
-          slot.className = 'time-slot';
-          slot.textContent = label;
-          slot.dataset.time = label;
-          slot.addEventListener('click', () => {
-            document.querySelectorAll('.time-slot.selected').forEach(s => s.classList.remove('selected'));
-            slot.classList.add('selected');
-            selectedTime = label;
-            modalConfirm.disabled = false;
+      if (tg.HapticFeedback) {
+        tg.HapticFeedback.impactOccurred('medium');
+      }
+
+      btn.classList.add('sent');
+
+      try {
+        const user = tg.initDataUnsafe?.user;
+        const chatId = user?.id;
+
+        // Build display name (or fallback)
+        const displayName = user
+          ? user.first_name
+          + (user.last_name ? ' ' + user.last_name : '')
+          + (user.username ? ` (@${user.username})` : '')
+          : 'Гость';
+
+        // 1. Send confirmation to the user (only if we have their chat ID)
+        if (chatId) {
+          const resp = await fetch(`${API_BASE}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: chatId,
+              text: `✅ ${commandText}\n📍 Комната: ${selectedRoom}`,
+            }),
           });
-          timeGrid.appendChild(slot);
+          const result = await resp.json();
+          if (!result.ok) {
+            console.warn('User msg failed:', result.description);
+          }
         }
+
+        // 2. Notify admins (always)
+        const adminText = `🔔 <b>Запрос из Mini App</b>\n\n`
+          + `👤 ${displayName}\n`
+          + `📍 Комната: <b>${selectedRoom}</b>\n`
+          + `📌 <code>${commandText}</code>`;
+
+        for (const adminId of ADMIN_IDS) {
+          const aResp = await fetch(`${API_BASE}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: adminId,
+              text: adminText,
+              parse_mode: 'HTML',
+            }),
+          });
+          const aResult = await aResp.json();
+          if (!aResult.ok) {
+            throw new Error(aResult.description || 'Bot API error');
+          }
+        }
+
+        showToast('> Запрос отправлен');
+
+      } catch (err) {
+        console.error('Send error:', err);
+        showToast('> Ошибка: ' + err.message, 3000);
       }
+
+      setTimeout(() => btn.classList.remove('sent'), 2000);
     }
 
-    function openModal() {
-      const min = getMinDate();
-      pickupDate.min = formatDateISO(min);
-      pickupDate.value = formatDateISO(min);
-      renderTimeSlots(pickupDate.value);
-      modalOverlay.classList.add('active');
-    }
-
-    function closeModal() {
-      modalOverlay.classList.remove('active');
-      selectedTime = null;
-    }
-
-    pickupDate.addEventListener('change', () => {
-      validateAndFixDate();
-      renderTimeSlots(pickupDate.value);
+    // ── Button listeners ──────────────────────────────────────
+    document.querySelectorAll('.action-btn').forEach(btn => {
+      btn.addEventListener('click', () => sendCommand(btn.dataset.command, btn));
     });
 
-    pickupDate.addEventListener('input', () => {
-      validateAndFixDate();
-      renderTimeSlots(pickupDate.value);
-    });
-
-    function validateAndFixDate() {
-      const val = pickupDate.value;
-      if (!val) return;
-      const d = new Date(val + 'T00:00:00');
-      // Block Sundays — skip to Monday
-      if (d.getDay() === 0) {
-        const next = new Date(d);
-        next.setDate(next.getDate() + 1);
-        pickupDate.value = formatDateISO(next);
+    // ── Close button ──────────────────────────────────────────
+    document.getElementById('closeBtn').addEventListener('click', () => {
+      if (tg && tg.HapticFeedback) {
+        tg.HapticFeedback.impactOccurred('light');
       }
-      // Enforce min date
-      const min = getMinDate();
-      if (new Date(pickupDate.value + 'T00:00:00') < min) {
-        pickupDate.value = formatDateISO(min);
-      }
-    }
-
-    modalCancel.addEventListener('click', closeModal);
-    modalOverlay.addEventListener('click', (e) => {
-      if (e.target === modalOverlay) closeModal();
-    });
-
-    /* ── Order Button → Open Modal ──────────────────────────── */
-    orderBtn.addEventListener("click", () => {
-      if (orderBtn.disabled) return;
-      openModal();
-    });
-
-    /* ── Confirm Order ──────────────────────────────────────── */
-    modalConfirm.addEventListener("click", () => {
-      if (!selectedTime || !pickupDate.value) return;
-
-      const items = CATALOG
-        .filter(item => quantities[item.id] > 0)
-        .map(item => ({
-          name: item.name,
-          quantity: quantities[item.id],
-          price: item.price,
-        }));
-
-      const totalPrice = items.reduce((sum, i) => sum + i.quantity * i.price, 0);
-
-      const payload = JSON.stringify({
-        type: "order",
-        items: items,
-        total: totalPrice,
-        pickup_date: pickupDate.value,
-        pickup_time: selectedTime,
-      });
-
       if (tg) {
-        try {
-          tg.sendData(payload);
-        } catch (err) {
-          // sendData may fail if opened via inline button — fallback to close
-          alert("Заказ отправлен! Закрываю приложение.");
-          tg.close();
-        }
+        tg.close();
       } else {
-        console.log("Order payload:", payload);
-        alert("Заказ отправлен!\n\n" + payload);
+        showToast('> Закрытие...');
       }
     });
-
-    /* ── Init ────────────────────────────────────────────────── */
-    renderCatalog();
-    updateUI();
   </script>
 </body>
 
